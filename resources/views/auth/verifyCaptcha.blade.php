@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('verifyCaptcha') }}">
+    <form method="POST" action="{{ route('verifyCaptcha') }}" id="verifyCaptcha">
         @if(session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}

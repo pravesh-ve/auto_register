@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\RegisterMail;
 use Faker\Generator as Faker;
+use Illuminate\Cache\LuaScripts;
 use Illuminate\Container\Container;
 
 class RegisterUser extends Command
@@ -31,6 +32,9 @@ class RegisterUser extends Command
      */
     public function handle(Faker $faker)
     {
+        // Start user registration
+        $this->info("User registration start...");
+
         $email = $this->argument('email');
 
         if(!$email){
@@ -45,8 +49,29 @@ class RegisterUser extends Command
             'password' => bcrypt($password),
             'verification_code' => random_int(10000000, 99999999),
         ]);
+
+        // Start sending OTP om email
         Mail::to($user->email)->send(new RegisterMail($user));
-        $this->info("User registered and verification email sent to $email");
+        $this->info("User registered and verification code sent to $email");
+
+        // Start email verification
+        $this->info("Email verification start.. ");
+        $verificationCode = $user->verification_code;
+        
+        if($verificationCode == $user->verification_code)
+        {
+            $user->email_verified_at = now();
+            $user->save();
+            $this->info("Email verified successfully. ");
+        }
+        else
+        {
+
+            $this->info("Email verification failed. ");
+        }
+
 
     }
+
+
 }

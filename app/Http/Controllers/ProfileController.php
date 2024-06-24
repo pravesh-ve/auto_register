@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-
+use Alert;
 class ProfileController extends Controller
 {
     /**
@@ -16,6 +16,9 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        alert()->success('Title','Lorem Lorem Lorem');
+
+
         return view('profile.edit', [
             'user' => $request->user(),
         ]);

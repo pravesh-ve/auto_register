@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\RegisterUser::class,
+        Commands\AutoRegister::class,
     ];
 
     /**
