@@ -10,6 +10,7 @@ use App\Mail\RegisterMail;
 use Faker\Generator as Faker;
 use Illuminate\Cache\LuaScripts;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Http;
 
 class RegisterUser extends Command
 {
@@ -70,6 +71,28 @@ class RegisterUser extends Command
             $this->info("Email verification failed. ");
         }
 
+
+        // Recaptcha verification it's only for testing and development purpose to bypass recaptcha with dummy data
+        $this->info("Captcha verification start.. ");
+
+        Http::fake([
+            'www.google.com/recaptcha/api/siteverify' => Http::response(['success' => true], 200),
+        ]);
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => env('RECAPTCHA_SECRET_KEY'),
+            'recaptcha_token' => 'fake_recaptcha_token',
+        ]);
+
+        $recaptchaResponse = $response->json();
+
+        if ($recaptchaResponse['success']) {
+            $this->info("Captcha verified successfully. ");
+
+        }else{
+            $this->error("Captcha verification failed. ");
+
+        }
 
     }
 
